@@ -1,7 +1,8 @@
 "use client";
 
-import { type ReactNode, useState, useEffect } from "react";
+import { type ReactNode, useState, useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "motion/react";
+import { List, X } from "@phosphor-icons/react";
 import { useTerminalTabs, TABS, type TabId } from "~/hooks/useTerminalTabs";
 
 interface TerminalLayoutProps {
@@ -77,6 +78,25 @@ export function TerminalLayout({
   const { activeTab, setActiveTab } = useTerminalTabs();
   const [time, setTime] = useState("");
   const [history, setHistory] = useState<TabId[]>(["home"]);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMobileMenuOpen(false);
+      }
+    };
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMobileMenuOpen(false);
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleEsc);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEsc);
+    };
+  }, []);
 
   useEffect(() => {
     const update = () => {
@@ -127,15 +147,63 @@ export function TerminalLayout({
         </span>
       </div>
 
-      <div className="flex shrink-0 overflow-x-auto bg-dark-bg border-b border-surface scrollbar-none">
-        {TABS.map((tab) => (
-          <TabButton
-            key={tab.id}
-            tab={tab}
-            isActive={activeTab === tab.id}
-            onClick={() => setActiveTab(tab.id)}
-          />
-        ))}
+      <div className="flex shrink-0 bg-dark-bg border-b border-surface relative">
+        <div className="hidden md:flex overflow-x-auto scrollbar-none">
+          {TABS.map((tab) => (
+            <TabButton
+              key={tab.id}
+              tab={tab}
+              isActive={activeTab === tab.id}
+              onClick={() => setActiveTab(tab.id)}
+            />
+          ))}
+        </div>
+
+        <button
+          onClick={() => setMobileMenuOpen((v) => !v)}
+          className="md:hidden flex items-center gap-2 px-4 py-2 text-xs font-mono text-dim-gray hover:text-terminal-gray transition-colors"
+          aria-label="Toggle menu"
+        >
+          {mobileMenuOpen ? <X size={16} weight="duotone" /> : <List size={16} weight="duotone" />}
+          <span>{TABS.find((t) => t.id === activeTab)?.label}</span>
+        </button>
+
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.div
+              ref={menuRef}
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.15, ease: [0.16, 1, 0.3, 1] }}
+              className="absolute top-full left-0 right-0 z-50 bg-dark-bg border border-surface shadow-lg md:hidden"
+            >
+              {TABS.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => {
+                    setActiveTab(tab.id);
+                    setMobileMenuOpen(false);
+                  }}
+                  className={`
+                    w-full flex items-center gap-2 px-4 py-2.5 text-xs font-mono text-left
+                    transition-colors duration-150 border-b border-surface/50 last:border-b-0
+                    ${activeTab === tab.id
+                      ? "bg-dark-navy text-matrix-green border-l-2 border-l-matrix-green"
+                      : "text-dim-gray hover:text-terminal-gray hover:bg-surface/30"
+                    }
+                  `}
+                >
+                  <TabIcon tabId={tab.id} isActive={activeTab === tab.id} />
+                  <span className="flex-1">{tab.label}</span>
+                  {activeTab === tab.id && (
+                    <span className="w-1.5 h-3 bg-matrix-green/80 animate-blink" />
+                  )}
+                </button>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       <div className="flex-1 overflow-y-auto overflow-x-hidden" style={{ zoom: 1.25 }}>
