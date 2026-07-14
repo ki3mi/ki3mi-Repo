@@ -2,7 +2,6 @@
 
 import { motion, useReducedMotion } from "motion/react";
 import { User, Code, TerminalWindow, MapPin } from "@phosphor-icons/react";
-import { PIXEL_HEART } from "~/lib/ascii-art";
 
 const stats = [
   { label: "especialidad", value: "Full Stack", icon: Code },
@@ -53,9 +52,16 @@ export function AboutSection() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="md:col-span-2 flex justify-center"
           >
-            <pre className="text-matrix-green text-[0.35rem] sm:text-[0.45rem] leading-tight select-none">
-              <code>{PIXEL_HEART}</code>
-            </pre>
+            <div className="relative">
+              <img
+                src="/foto.png"
+                alt="Jose Ccente Mejia"
+                className="w-32 h-32 sm:w-40 sm:h-40 rounded-full object-cover border-2 border-matrix-green/60"
+              />
+              <div className="absolute -bottom-2 -right-2 bg-dark-navy border border-matrix-green/40 px-2 py-0.5 text-[8px] text-matrix-green font-mono">
+                $ whoami
+              </div>
+            </div>
           </motion.div>
         </div>
       </motion.div>

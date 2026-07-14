@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { Terminal } from "@phosphor-icons/react";
 import { ASCII_LOGO, BOOT_LINES } from "~/lib/ascii-art";
+import { SimulatedTerminal } from "~/components/SimulatedTerminal";
 
 function BootSequence({ onComplete }: { onComplete: () => void }) {
   const [visibleLines, setVisibleLines] = useState<string[]>([]);
@@ -56,8 +57,8 @@ export function Hero() {
   const reduce = useReducedMotion();
 
   return (
-    <div className="space-y-8">
-      <div className="space-y-6">
+    <div className="lg:grid lg:grid-cols-5 lg:gap-8 space-y-8 lg:space-y-0">
+      <div className="lg:col-span-3 space-y-6">
         <motion.div
           initial={reduce ? false : { opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -152,6 +153,15 @@ export function Hero() {
           </motion.div>
         )}
       </div>
+
+      <motion.div
+        initial={reduce ? false : { opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.8, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+        className="hidden lg:block lg:col-span-2"
+      >
+        <SimulatedTerminal started={bootComplete} />
+      </motion.div>
     </div>
   );
 }
