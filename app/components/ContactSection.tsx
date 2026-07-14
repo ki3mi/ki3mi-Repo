@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
-import { Envelope, GithubLogo, LinkedinLogo } from "@phosphor-icons/react";
+import { Envelope, GithubLogo, LinkedinLogo, WhatsappLogo } from "@phosphor-icons/react";
 
 export function ContactSection() {
   const [formState, setFormState] = useState({ name: "", email: "", message: "" });
@@ -75,11 +75,13 @@ export function ContactSection() {
                 { icon: GithubLogo, label: "GitHub", handle: "https://github.com/ki3mi", url:"https://github.com/ki3mi" },
                 { icon: LinkedinLogo, label: "LinkedIn", handle: "@joseccente", url:"https://www.linkedin.com/in/jose-ccente-mejia-3b2b37278/" },
                 { icon: Envelope, label: "Email", handle: "ki3minpc@gmail.com", url:"#" },
+                { icon: WhatsappLogo, label: "WhatsApp", handle: "+51 999690202", url:"https://wa.me/51999690202?text=Hola%20Jose!%20Vi%20tu%20portfolio%20y%20me%20gustaria%20contactarme%20contigo." },
               ].map((link) => (
                 <a
                   key={link.label}
                   href={link.url}
                   target={link.url.startsWith('mailto:') || link.url === '#' ? undefined : '_blank'}
+                  rel="noopener noreferrer"
                   className="flex items-center gap-2 sm:gap-3 text-[10px] sm:text-xs text-dim-gray hover:text-matrix-green transition-colors duration-200 group"
                 >
                   <link.icon
@@ -95,7 +97,7 @@ export function ContactSection() {
             </div>
           </div>
 
-          <div className="border border-surface bg-dark-bg p-4 sm:p-5">
+          <div className="border border-surface bg-dark-bg p-4 sm:p-5 hidden md:block">
             <p className="text-[10px] sm:text-xs text-dim-gray font-mono mb-1.5 sm:mb-2">
               <span className="text-yellow-accent">$</span> pgp_key
             </p>
@@ -173,6 +175,24 @@ export function ContactSection() {
             {sending ? "Sending..." : sent ? "[✓] Message sent!" : "$ ./send_message"}
           </button>
         </motion.form>
+
+        <motion.div
+          initial={reduce ? false : { opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          className="border border-surface bg-dark-bg p-4 sm:p-5 md:hidden"
+        >
+          <p className="text-[10px] sm:text-xs text-dim-gray font-mono mb-1.5 sm:mb-2">
+            <span className="text-yellow-accent">$</span> pgp_key
+          </p>
+          <pre className="text-[0.35rem] sm:text-[0.4rem] text-dim-gray leading-tight">
+            <code>
+              {"─────BEGIN PGP PUBLIC KEY─────\n"}
+              {"mQINBF8AAAABEQAA...\n"}
+              {"──────END PGP PUBLIC KEY──────"}
+            </code>
+          </pre>
+        </motion.div>
       </div>
     </div>
   );

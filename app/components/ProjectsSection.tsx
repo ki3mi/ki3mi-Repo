@@ -33,7 +33,7 @@ const projects = [
   {
     title: "LAKSHMI",
     description: "A landing page for a music producer built with Next.js and Supabase. The page leverages a Retro Synthwave aesthetic and Parallax animations. (Under construction)",
-    tech: ["C#", "Unity 2D"],
+    tech: ["Next Js", "Javascript", "TailwindCss"],
     year: "2026",
     repo: "https://github.com/ki3mi/LAKSHMI-landing-page",
     link: "https://lakshmi-landing-page.vercel.app/",
